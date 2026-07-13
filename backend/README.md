@@ -215,6 +215,8 @@ See `.env.example`. Key ones:
 Tables created and tested against real PostgreSQL. All validation rules verified via live
 HTTP requests, not just unit tests. 12/12 automated tests passing.
 
-**Next:** Phase 2 — React frontend (class selector, date picker, attendance table, bulk
-save). Phase 3 — integration + documentation. Phase 4 — screenshots/recording + submission
-package.
+**Phase 2 (frontend) and Phase 3 (integration) are also complete** — see the root
+`README.md` for the full-stack setup and the integration checks that were run against this
+API together with the frontend.
+
+**Next:** Phase 4 — screenshots/recording + submission package.

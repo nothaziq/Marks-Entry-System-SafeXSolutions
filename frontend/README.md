@@ -102,5 +102,7 @@ See `.env.example`.
 Login, class selector, date-scoped attendance register with bulk save and per-row edit, and
 route protection are all wired to the live Phase 1 API contract.
 
-**Next:** Phase 3 — integration pass (CORS/error/loading states end-to-end) + written
-documentation. Phase 4 — screenshots/recording + submission package.
+**Phase 3 (integration) is also complete** — see the root `README.md` for the full-stack
+setup and the specific CORS/auth/error/loading checks that were run against a live backend.
+
+**Next:** Phase 4 — screenshots/recording + submission package.
