@@ -1,0 +1,108 @@
+@import url("https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap");
+@import "tailwindcss";
+
+:root {
+  --ink: #1b2430;
+  --ink-soft: #4b5563;
+  --paper: #f7f7f4;
+  --paper-raised: #ffffff;
+  --line: #dfded8;
+  --primary: #2a5c4b;
+  --primary-dark: #1e4438;
+  --primary-tint: #e7f0ec;
+
+  --present: #2f7d4f;
+  --present-tint: #e6f3ea;
+  --absent: #b4453a;
+  --absent-tint: #fbe9e7;
+  --late: #b8842c;
+  --late-tint: #fbf1de;
+  --leave: #4a5fa0;
+  --leave-tint: #e9ecf6;
+
+  --font-display: "Zilla Slab", ui-serif, Georgia, serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.font-mono-tab {
+  font-family: var(--font-mono);
+}
+
+/* Signature element: rubber-stamp status badges */
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.6rem;
+  border-radius: 3px;
+  border: 1.5px solid currentColor;
+  transform: rotate(-1deg);
+  white-space: nowrap;
+}
+
+.stamp-present {
+  color: var(--present);
+  background: var(--present-tint);
+}
+.stamp-absent {
+  color: var(--absent);
+  background: var(--absent-tint);
+  transform: rotate(1deg);
+}
+.stamp-late {
+  color: var(--late);
+  background: var(--late-tint);
+}
+.stamp-leave {
+  color: var(--leave);
+  background: var(--leave-tint);
+  transform: rotate(1deg);
+}
+
+/* focus visibility */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -30,8 +30,6 @@ try:
 
         students = [
             Student(full_name="Ali Raza", roll_number="242201", class_id=cls.id),
-            Student(full_name="Hareem Shakeel", roll_number="242204", class_id=cls.id),
-            Student(full_name="Sarosh Hussain", roll_number="242240", class_id=cls.id),
             Student(full_name="Mudassar Majeed", roll_number="242244", class_id=cls.id),
             Student(full_name="Muhammad Haziq", roll_number="242242", class_id=cls.id),
         ]
