@@ -16,7 +16,7 @@ const NAV_ITEMS = [
   { label: "Dashboard", icon: LayoutGrid, to: "/dashboard" },
   { label: "Classes", icon: BookOpen, to: "/classes" },
   { label: "Attendance History", icon: History, to: null },
-  { label: "Reports", icon: BarChart3, to: null, soon: true },
+  { label: "Reports", icon: BarChart3, to: "/reports" },
   { label: "Students", icon: Users, to: null },
   { label: "Profile", icon: UserCircle, to: null },
   { label: "Settings", icon: Settings, to: null, soon: true },
