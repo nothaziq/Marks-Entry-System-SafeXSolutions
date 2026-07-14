@@ -3,7 +3,6 @@ import {
   GraduationCap,
   LayoutGrid,
   BookOpen,
-  History,
   BarChart3,
   Users,
   Settings,
@@ -14,7 +13,6 @@ import { useAuth } from "../store/AuthContext";
 const NAV_ITEMS = [
   { label: "Dashboard", icon: LayoutGrid, to: "/dashboard" },
   { label: "Classes", icon: BookOpen, to: "/classes" },
-  { label: "Attendance History", icon: History, to: null },
   { label: "Reports", icon: BarChart3, to: "/reports" },
   { label: "Students", icon: Users, to: "/students" },
   { label: "Settings", icon: Settings, to: "/settings" },

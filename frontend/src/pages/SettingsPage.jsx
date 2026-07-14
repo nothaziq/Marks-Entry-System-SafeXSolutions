@@ -7,8 +7,6 @@ import {
   ShieldCheck,
   Eye,
   EyeOff,
-  Trash2,
-  AlertTriangle,
 } from "lucide-react";
 import { useAuth } from "../store/AuthContext";
 import { changePassword } from "../services/authService";
@@ -315,25 +313,6 @@ export default function SettingsPage() {
               />
               <InfoRow label="Member Since" value={formatDate(teacher?.created_at)} />
             </dl>
-          </div>
-
-          <div className="card border-[var(--absent-border)] p-5">
-            <h3 className="mb-2 flex items-center gap-2 text-sm font-bold text-[var(--absent)]">
-              <AlertTriangle size={16} strokeWidth={2} />
-              Danger Zone
-            </h3>
-            <p className="mb-4 text-xs text-[var(--ink-soft)]">
-              Account deletion isn't available yet — there's no backend support for it. Contact your
-              administrator if you need your account removed.
-            </p>
-            <button
-              type="button"
-              disabled
-              className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-[var(--absent-border)] px-4 py-2.5 text-sm font-semibold text-[var(--absent)] opacity-50"
-            >
-              <Trash2 size={15} strokeWidth={2} />
-              Delete Account
-            </button>
           </div>
         </div>
       </div>

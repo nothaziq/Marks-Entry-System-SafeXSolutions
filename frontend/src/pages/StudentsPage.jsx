@@ -6,15 +6,11 @@ import {
   Search,
   ChevronDown,
   Download,
-  UserPlus,
-  Eye,
-  MoreVertical,
   Users,
   BookOpen,
   BarChart3,
   Crown,
   ArrowRight,
-  Upload,
   ClipboardList,
   Info,
 } from "lucide-react";
@@ -82,17 +78,6 @@ export default function StudentsPage() {
           >
             <Download size={15} strokeWidth={2} />
             Export List
-          </button>
-          <button
-            disabled
-            title="Adding students isn't available yet"
-            className="relative flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-[var(--primary)] px-3.5 py-2.5 text-sm font-semibold text-white opacity-50"
-          >
-            <UserPlus size={15} strokeWidth={2} />
-            Add Student
-            <span className="absolute -right-2 -top-2 rounded-full bg-[var(--ink-faint)] px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-white">
-              SOON
-            </span>
           </button>
         </div>
       </div>
@@ -162,7 +147,6 @@ export default function StudentsPage() {
                             <th className="px-4 py-3">Roll Number</th>
                             <th className="px-4 py-3">Student Name</th>
                             <th className="px-4 py-3">Class - Section</th>
-                            <th className="px-4 py-3 text-right">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-[var(--border-soft)]">
@@ -172,24 +156,6 @@ export default function StudentsPage() {
                               <td className="px-4 py-3 font-mono-tab text-[var(--ink-soft)]">{s.roll_number}</td>
                               <td className="px-4 py-3 font-semibold text-[var(--ink)]">{s.full_name}</td>
                               <td className="px-4 py-3 text-[var(--ink-soft)]">{s.classLabel}</td>
-                              <td className="px-4 py-3">
-                                <div className="flex items-center justify-end gap-1">
-                                  <Link
-                                    to={`/attendance/${s.class_id}`}
-                                    title="View class attendance"
-                                    className="rounded-md p-1.5 text-[var(--ink-faint)] hover:bg-[var(--surface)] hover:text-[var(--accent)]"
-                                  >
-                                    <Eye size={16} strokeWidth={2} />
-                                  </Link>
-                                  <button
-                                    disabled
-                                    title="Coming soon"
-                                    className="cursor-not-allowed rounded-md p-1.5 text-[var(--ink-faint)] opacity-40"
-                                  >
-                                    <MoreVertical size={16} strokeWidth={2} />
-                                  </button>
-                                </div>
-                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -266,24 +232,12 @@ export default function StudentsPage() {
                     </span>
                     <ArrowRight size={14} strokeWidth={2.5} className="text-[var(--ink-faint)]" />
                   </button>
-                  <div
-                    className="relative flex cursor-default items-center justify-between gap-2 rounded-lg border border-[var(--border)] px-3 py-2.5 text-sm font-semibold text-[var(--ink-faint)] opacity-60"
-                    aria-disabled="true"
-                  >
-                    <span className="flex items-center gap-2.5">
-                      <Upload size={16} strokeWidth={2} />
-                      Upload from Excel
-                    </span>
-                    <span className="rounded-full bg-[var(--bg)] px-2 py-0.5 text-[10px] font-semibold tracking-wide text-[var(--ink-faint)]">
-                      SOON
-                    </span>
-                  </div>
                 </div>
               </div>
 
               <div className="flex items-start gap-2.5 rounded-lg border border-[var(--accent-tint)] bg-[var(--accent-tint)] px-4 py-3 text-sm text-[var(--accent)]">
                 <Info size={16} strokeWidth={2} className="mt-0.5 shrink-0" />
-                <p>This roster is pulled live from each of your classes. Adding, editing, or importing students isn't wired up yet.</p>
+                <p>This roster is pulled live from each of your classes. Adding, editing, or removing students is handled by an administrator — as a teacher, you can view your roster and mark attendance here.</p>
               </div>
             </div>
           </div>

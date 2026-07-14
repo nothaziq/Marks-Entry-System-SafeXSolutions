@@ -9,7 +9,6 @@ import {
   ChevronRight,
   Upload,
   FileText,
-  History,
   Info,
   CircleCheck,
   Circle,
@@ -31,8 +30,7 @@ function firstName(fullName) {
 const QUICK_ACTIONS = [
   { label: "View All Classes", sublabel: "Manage your classes", icon: Users, to: "/classes" },
   { label: "Upload from Excel", sublabel: "Bulk attendance", icon: Upload, soon: true },
-  { label: "Generate Report", sublabel: "Attendance reports", icon: FileText, soon: true },
-  { label: "Attendance History", sublabel: "View past records", icon: History, soon: true },
+  { label: "Generate Report", sublabel: "Attendance reports & history", icon: FileText, to: "/reports" },
 ];
 
 export default function DashboardPage() {
@@ -126,7 +124,7 @@ export default function DashboardPage() {
 
               <div className="card p-5">
                 <h2 className="mb-4 text-base font-bold text-[var(--ink)]">Quick Actions</h2>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {QUICK_ACTIONS.map((action) => {
                     const Icon = action.icon;
                     const content = (
