@@ -28,7 +28,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://attendance_user:attendance_pass@db:5432/attendance_db
-      SECRET_KEY: change-this-to-a-long-random-string
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in a .env file at the project root — see .env.example}
       JWT_ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 60
       CORS_ORIGINS: http://localhost:5173

@@ -70,8 +70,10 @@ backend/
 
 Requires Docker + Docker Compose installed.
 
+`docker-compose.yml` lives at the **repo root**, not in `backend/`. From the repo root:
+
 ```bash
-cd backend
+cp .env.example .env        # then fill in SECRET_KEY, e.g. via: openssl rand -hex 32
 docker compose up --build
 ```
 
