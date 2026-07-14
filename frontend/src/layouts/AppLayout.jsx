@@ -16,7 +16,6 @@ import { useAuth } from "../store/AuthContext";
 const NAV_ITEMS = [
   { label: "Dashboard", icon: LayoutGrid, to: null },
   { label: "Classes", icon: BookOpen, to: "/classes" },
-  { label: "Attendance", icon: CalendarCheck, to: "/classes", matchPrefix: "/attendance" },
   { label: "Attendance History", icon: History, to: null },
   { label: "Reports", icon: BarChart3, to: null, soon: true },
   { label: "Students", icon: Users, to: null },
@@ -60,9 +59,9 @@ export default function AppLayout() {
         <nav className="flex-1 space-y-1 px-3 py-2">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
-            const isActive = item.to
-              ? location.pathname === item.to || (item.matchPrefix && location.pathname.startsWith(item.matchPrefix))
-              : false;
+            const isActive = item.matchPrefix
+                ? location.pathname.startsWith(item.matchPrefix)
+                : Boolean(item.to) && location.pathname === item.to;
             const commonClasses =
               "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors";
 
