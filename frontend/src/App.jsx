@@ -6,6 +6,7 @@ import DashboardPage from "./pages/DashboardPage";
 import ClassesPage from "./pages/ClassesPage";
 import AttendancePage from "./pages/AttendancePage";
 import ReportsPage from "./pages/ReportsPage";
+import SettingsPage from "./pages/SettingsPage";
 import StudentsPage from "./pages/StudentsPage";
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
             <Route path="/classes" element={<ClassesPage />} />
             <Route path="/attendance/:classId" element={<AttendancePage />} />
             <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="/students" element={<StudentsPage />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Route>

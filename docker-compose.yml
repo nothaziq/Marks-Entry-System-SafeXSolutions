@@ -50,6 +50,15 @@ services:
       VITE_API_BASE_URL: http://localhost:8000
     ports:
       - "5173:5173"
+    volumes:
+      # Bind-mount your local source into the container so the Vite dev
+      # server (and its HMR/file-watcher) sees edits immediately, instead
+      # of only picking them up on the next `docker compose build`.
+      - ./frontend:/app
+      # Anonymous volume so the container keeps its own node_modules
+      # (built for Linux inside the image) instead of the host's, which
+      # may be missing or built for a different OS/arch.
+      - /app/node_modules
 
 volumes:
   attendance_pgdata:
