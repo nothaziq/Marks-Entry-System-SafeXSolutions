@@ -1,6 +1,7 @@
 from __future__ import annotations
+from datetime import date as date_type
 
-from sqlalchemy import String, Boolean
+from sqlalchemy import String, Boolean, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
@@ -15,5 +16,7 @@ class Teacher(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
+    reminders_enabled: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
+    last_reminder_sent_date: Mapped[date_type | None] = mapped_column(Date, nullable=True)
 
     classes: Mapped[list["Class"]] = relationship(back_populates="teacher")

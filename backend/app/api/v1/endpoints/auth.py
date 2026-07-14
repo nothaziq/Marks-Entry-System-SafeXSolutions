@@ -9,7 +9,9 @@ from app.schemas.auth import (
     ChangePasswordRequest,
 )
 from app.schemas.common import SuccessResponse
+from app.schemas.notifications import NotificationPreferencesResponse, UpdateNotificationPreferencesRequest
 from app.services.auth_service import AuthService
+from app.services.notification_preferences_service import NotificationPreferencesService
 
 router = APIRouter(tags=["Authentication"])
 
@@ -47,3 +49,17 @@ def profile(current_teacher: CurrentTeacher):
 def change_password(payload: ChangePasswordRequest, current_teacher: CurrentTeacher, db: DbSession):
     AuthService(db).change_password(current_teacher, payload)
     return SuccessResponse(message="Password updated successfully.")
+
+
+@router.get("/notification-preferences", response_model=SuccessResponse[NotificationPreferencesResponse])
+def get_notification_preferences(current_teacher: CurrentTeacher, db: DbSession):
+    prefs = NotificationPreferencesService(db).get_preferences(current_teacher)
+    return SuccessResponse(message="Notification preferences retrieved.", data=prefs)
+
+
+@router.put("/notification-preferences", response_model=SuccessResponse[NotificationPreferencesResponse])
+def update_notification_preferences(
+    payload: UpdateNotificationPreferencesRequest, current_teacher: CurrentTeacher, db: DbSession
+):
+    prefs = NotificationPreferencesService(db).update_preferences(current_teacher, payload)
+    return SuccessResponse(message="Notification preferences updated.", data=prefs)

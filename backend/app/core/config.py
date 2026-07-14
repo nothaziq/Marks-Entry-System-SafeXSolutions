@@ -22,6 +22,15 @@ class Settings(BaseSettings):
     # CORS
     CORS_ORIGINS: str = "http://localhost:5173"
 
+    # Email (Gmail SMTP) - used by the daily attendance reminder job
+    GMAIL_ADDRESS: str = ""
+    GMAIL_APP_PASSWORD: str = ""
+    GMAIL_SENDER_NAME: str = "Marks Entry System"
+
+    # Daily reminder job schedule (24-hour, server-local time)
+    REMINDER_HOUR: int = 17
+    REMINDER_MINUTE: int = 0
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     @property

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   UserCircle,
   Bell,
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../store/AuthContext";
 import { changePassword } from "../services/authService";
+import { fetchNotificationPreferences, updateNotificationPreferences } from "../services/notificationService";
 import { exportAttendanceCSV, exportAttendanceExcel } from "../features/import-export/attendanceExport";
 import ImportAttendanceModal from "../features/import-export/ImportAttendanceModal";
 import ErrorBanner from "../components/ErrorBanner";
@@ -23,9 +24,6 @@ import { todayISO, addDaysISO, formatShortDate } from "../utils/date";
 const PREFS_KEY = "attendance_local_prefs";
 
 const DEFAULT_PREFS = {
-  emailNotifications: true,
-  attendanceReminders: true,
-  weeklyDigest: false,
   language: "English (US)",
   dateFormat: "MMM DD, YYYY",
   timeFormat: "12 Hour (AM/PM)",
@@ -93,13 +91,52 @@ export default function SettingsPage() {
     }
   }
 
-  // --- Local-only preferences ---
+  // --- Local-only preferences (language/date/time format - not yet server-backed) ---
   const [prefs, setPrefs] = useState(loadLocalPrefs);
 
   function updatePrefs(patch) {
     const next = { ...prefs, ...patch };
     setPrefs(next);
     localStorage.setItem(PREFS_KEY, JSON.stringify(next));
+  }
+
+  // --- Notification preferences (server-backed) ---
+  const [remindersEnabled, setRemindersEnabled] = useState(null); // null while loading
+  const [remindersLoading, setRemindersLoading] = useState(true);
+  const [remindersSaving, setRemindersSaving] = useState(false);
+  const [remindersError, setRemindersError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchNotificationPreferences()
+      .then((data) => {
+        if (!cancelled) setRemindersEnabled(data.reminders_enabled);
+      })
+      .catch((err) => {
+        if (!cancelled) setRemindersError(err.message || "Couldn't load notification preferences.");
+      })
+      .finally(() => {
+        if (!cancelled) setRemindersLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function handleToggleReminders(nextValue) {
+    const previousValue = remindersEnabled;
+    setRemindersEnabled(nextValue); // optimistic update
+    setRemindersSaving(true);
+    setRemindersError(null);
+    try {
+      const data = await updateNotificationPreferences({ reminders_enabled: nextValue });
+      setRemindersEnabled(data.reminders_enabled);
+    } catch (err) {
+      setRemindersEnabled(previousValue); // revert on failure
+      setRemindersError(err.message || "Couldn't update notification preferences.");
+    } finally {
+      setRemindersSaving(false);
+    }
   }
 
   // --- Backup & Export ---
@@ -252,26 +289,20 @@ export default function SettingsPage() {
             <div className="card p-6">
               <h2 className="text-lg font-bold text-[var(--ink)]">Notifications</h2>
               <p className="mt-0.5 text-sm text-[var(--ink-soft)]">
-                Saved on this device only — there's no notification service wired up yet.
+                Get a daily email if you haven't marked attendance for one of your classes yet.
               </p>
+              {remindersError && (
+                <div className="mt-4">
+                  <ErrorBanner message={remindersError} />
+                </div>
+              )}
               <div className="mt-5 divide-y divide-[var(--border-soft)]">
                 <ToggleRow
-                  label="Email notifications"
-                  description="Get emailed about account activity."
-                  checked={prefs.emailNotifications}
-                  onChange={(v) => updatePrefs({ emailNotifications: v })}
-                />
-                <ToggleRow
                   label="Attendance reminders"
-                  description="Remind me if I haven't marked attendance for a class."
-                  checked={prefs.attendanceReminders}
-                  onChange={(v) => updatePrefs({ attendanceReminders: v })}
-                />
-                <ToggleRow
-                  label="Weekly digest"
-                  description="A weekly summary of attendance across your classes."
-                  checked={prefs.weeklyDigest}
-                  onChange={(v) => updatePrefs({ weeklyDigest: v })}
+                  description="Email me if I haven't marked attendance for a class yet today."
+                  checked={remindersEnabled ?? false}
+                  disabled={remindersLoading || remindersSaving}
+                  onChange={handleToggleReminders}
                 />
               </div>
             </div>
@@ -450,7 +481,7 @@ function InfoRow({ label, value }) {
   );
 }
 
-function ToggleRow({ label, description, checked, onChange }) {
+function ToggleRow({ label, description, checked, onChange, disabled = false }) {
   return (
     <div className="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0">
       <div>
@@ -461,8 +492,9 @@ function ToggleRow({ label, description, checked, onChange }) {
         type="button"
         role="switch"
         aria-checked={checked}
+        disabled={disabled}
         onClick={() => onChange(!checked)}
-        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
           checked ? "bg-[var(--accent)]" : "bg-[var(--border)]"
         }`}
       >
