@@ -24,10 +24,13 @@ export default function ClassesPage() {
       )}
 
       {classes && classes.length > 0 && (
-        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid animate-fade-up grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {classes.map((cls) => (
             <li key={cls.id}>
-              <Link to={`/attendance/${cls.id}`} className="card group flex flex-col gap-3 p-5 transition-colors hover:border-[var(--accent)]">
+              <Link
+                to={`/attendance/${cls.id}`}
+                className="card group flex flex-col gap-3 p-5 transition-all duration-150 hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-md active:translate-y-0"
+              >
                 <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--accent-tint)] text-[var(--accent)]">
                   <BookOpen size={18} strokeWidth={2} />
                 </span>

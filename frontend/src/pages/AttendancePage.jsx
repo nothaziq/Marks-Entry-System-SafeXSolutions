@@ -38,7 +38,7 @@ export default function AttendancePage() {
         </div>
       </div>
 
-      <div className="card mb-6 grid grid-cols-1 gap-4 p-5 sm:grid-cols-[2fr_1fr]">
+      <div className="card mb-6 grid animate-fade-up grid-cols-1 gap-4 p-5 sm:grid-cols-[2fr_1fr]">
         <div>
           <label htmlFor="class-select" className="mb-1.5 block text-xs font-semibold text-[var(--ink-soft)]">
             Class

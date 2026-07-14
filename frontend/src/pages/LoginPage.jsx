@@ -35,7 +35,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-full items-center justify-center px-4" style={{ background: "var(--bg)" }}>
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm animate-fade-up">
         <div className="mb-8 text-center">
           <span
             className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--primary)] text-white"
@@ -111,7 +111,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-lg bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[var(--primary-hover)] disabled:opacity-60"
+            className="w-full rounded-lg bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-60 disabled:active:scale-100"
           >
             {isSubmitting ? "Signing in…" : "Sign in"}
           </button>

@@ -5,7 +5,7 @@ export default function AttendanceRow({ index, row, onChange }) {
 
   return (
     <div
-      className="grid grid-cols-[2rem_5rem_1fr] items-center gap-3 border-b border-[var(--border-soft)] px-5 py-3.5 last:border-b-0 hover:bg-[var(--bg)]/60 sm:grid-cols-[2rem_6rem_1fr_9rem_1fr]"
+      className="grid grid-cols-[2rem_5rem_1fr] items-center gap-3 border-b border-[var(--border-soft)] px-5 py-3.5 transition-colors duration-150 last:border-b-0 hover:bg-[var(--bg)]/60 sm:grid-cols-[2rem_6rem_1fr_9rem_1fr]"
     >
       <span className="text-sm text-[var(--ink-faint)]">{index}</span>
       <span className="font-mono-tab text-sm text-[var(--ink-soft)]">{row.rollNumber}</span>

@@ -3,7 +3,6 @@ import {
   GraduationCap,
   LayoutGrid,
   BookOpen,
-  CalendarCheck,
   History,
   BarChart3,
   Users,
@@ -14,7 +13,7 @@ import {
 import { useAuth } from "../store/AuthContext";
 
 const NAV_ITEMS = [
-  { label: "Dashboard", icon: LayoutGrid, to: null },
+  { label: "Dashboard", icon: LayoutGrid, to: "/dashboard" },
   { label: "Classes", icon: BookOpen, to: "/classes" },
   { label: "Attendance History", icon: History, to: null },
   { label: "Reports", icon: BarChart3, to: null, soon: true },
@@ -46,7 +45,7 @@ export default function AppLayout() {
   return (
     <div className="flex min-h-full" style={{ background: "var(--bg)" }}>
       <aside className="flex w-64 shrink-0 flex-col border-r border-[var(--border)] bg-[var(--surface)]">
-        <Link to="/classes" className="flex items-center gap-2.5 px-5 py-5">
+        <Link to="/dashboard" className="flex items-center gap-2.5 px-5 py-5">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--primary)] text-white">
             <GraduationCap size={19} strokeWidth={2.25} />
           </span>

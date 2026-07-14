@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Users,
@@ -10,6 +10,7 @@ import {
   ClipboardCheck,
   RotateCcw,
   Save,
+  Check,
   Calendar,
   TrendingUp,
   Zap,
@@ -72,6 +73,13 @@ export default function AttendanceRegister({
   const [formError, setFormError] = useState(null);
   const [search, setSearch] = useState("");
   const [lastSavedAt, setLastSavedAt] = useState(null);
+  const [justSaved, setJustSaved] = useState(false);
+
+  useEffect(() => {
+    if (!justSaved) return;
+    const timer = setTimeout(() => setJustSaved(false), 1600);
+    return () => clearTimeout(timer);
+  }, [justSaved]);
 
   const trendQuery = useAttendanceTrend(classId);
 
@@ -120,6 +128,7 @@ export default function AttendanceRegister({
       await onSubmitAll(rows.map((r) => ({ student_id: r.studentId, status: r.status, remarks: r.remarks || null })));
       setRows((prev) => prev.map((r) => ({ ...r, savedStatus: r.status, savedRemarks: r.remarks })));
       setLastSavedAt(new Date());
+      setJustSaved(true);
     } catch (err) {
       setFormError(err.message || "Couldn't save attendance.");
     }
@@ -133,6 +142,7 @@ export default function AttendanceRegister({
       );
       setRows((prev) => prev.map((r) => ({ ...r, savedStatus: r.status, savedRemarks: r.remarks })));
       setLastSavedAt(new Date());
+      setJustSaved(true);
     } catch (err) {
       setFormError(err.message || "Couldn't save your changes.");
     }
@@ -154,7 +164,7 @@ export default function AttendanceRegister({
         </div>
       )}
 
-      <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mb-6 grid animate-fade-up grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <StatCard icon={Users} label="Total Students" value={counts.total} sublabel="Enrolled" tint="accent" />
         <StatCard icon={CheckCircle2} label="Present" value={counts.present} sublabel={`${pct(counts.present)}%`} tint="present" />
         <StatCard icon={XCircle} label="Absent" value={counts.absent} sublabel={`${pct(counts.absent)}%`} tint="absent" />
@@ -162,7 +172,7 @@ export default function AttendanceRegister({
         <StatCard icon={DoorOpen} label="Leave" value={counts.leave} sublabel={`${pct(counts.leave)}%`} tint="leave" />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
+      <div className="grid animate-fade-up grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
         <div>
           <div className="card mb-4 flex flex-wrap items-center gap-3 p-3">
             <div className="relative min-w-[220px] flex-1">
@@ -177,14 +187,14 @@ export default function AttendanceRegister({
             </div>
             <button
               onClick={markAllPresent}
-              className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--ink)] hover:bg-[var(--bg)]"
+              className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition-all duration-150 hover:bg-[var(--bg)] active:scale-[0.97]"
             >
               <ClipboardCheck size={16} strokeWidth={2} />
               Mark All Present
             </button>
             <button
               onClick={resetRows}
-              className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--ink)] hover:bg-[var(--bg)]"
+              className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition-all duration-150 hover:bg-[var(--bg)] active:scale-[0.97]"
             >
               <RotateCcw size={16} strokeWidth={2} />
               Reset
@@ -192,16 +202,24 @@ export default function AttendanceRegister({
             <button
               onClick={mode === "draft" ? handleBulkSave : handleSaveChanges}
               disabled={isSaving || (mode === "draft" ? !allStatusesSet : dirtyRows.length === 0)}
-              className="flex items-center gap-1.5 rounded-lg bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--primary-hover)] disabled:opacity-50"
+              className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-all duration-150 active:scale-[0.97] disabled:opacity-50 disabled:active:scale-100 ${
+                justSaved ? "bg-[var(--present)]" : "bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+              }`}
             >
-              <Save size={16} strokeWidth={2} />
-              {isSaving
-                ? "Saving…"
-                : mode === "draft"
-                  ? "Save Attendance"
-                  : dirtyRows.length > 0
-                    ? `Save ${dirtyRows.length} Change${dirtyRows.length > 1 ? "s" : ""}`
-                    : "Save Attendance"}
+              {justSaved ? (
+                <Check key="saved-icon" size={16} strokeWidth={2.5} className="animate-pop-in" />
+              ) : (
+                <Save size={16} strokeWidth={2} />
+              )}
+              {justSaved
+                ? "Saved"
+                : isSaving
+                  ? "Saving…"
+                  : mode === "draft"
+                    ? "Save Attendance"
+                    : dirtyRows.length > 0
+                      ? `Save ${dirtyRows.length} Change${dirtyRows.length > 1 ? "s" : ""}`
+                      : "Save Attendance"}
             </button>
           </div>
 
@@ -252,7 +270,10 @@ export default function AttendanceRegister({
                 <span className="text-lg font-extrabold text-[var(--ink)]">{attendanceRate ?? "—"}{attendanceRate !== null && "%"}</span>
               </div>
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--bg)]">
-                <div className="h-full rounded-full bg-[var(--present)]" style={{ width: `${attendanceRate ?? 0}%` }} />
+                <div
+                  className="h-full rounded-full bg-[var(--present)] transition-[width] duration-500 ease-out"
+                  style={{ width: `${attendanceRate ?? 0}%` }}
+                />
               </div>
             </div>
 
@@ -282,14 +303,14 @@ export default function AttendanceRegister({
             <div className="space-y-2">
               <Link
                 to="/classes"
-                className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--ink)] hover:bg-[var(--bg)]"
+                className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition-all duration-150 hover:bg-[var(--bg)] active:scale-[0.97]"
               >
                 <FolderOpen size={16} strokeWidth={2} />
                 View All Classes
               </Link>
               <button
                 onClick={() => downloadCSV(rows, className, date)}
-                className="flex w-full items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--ink)] hover:bg-[var(--bg)]"
+                className="flex w-full items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition-all duration-150 hover:bg-[var(--bg)] active:scale-[0.97]"
               >
                 <Download size={16} strokeWidth={2} />
                 Export CSV

@@ -14,7 +14,7 @@ export default function StatusSelect({ value, onChange, disabled, label }) {
       value={value || ""}
       disabled={disabled}
       onChange={(e) => onChange(e.target.value)}
-      className={`status-pill w-full cursor-pointer appearance-none pr-6 disabled:cursor-not-allowed disabled:opacity-50 ${
+      className={`status-pill w-full cursor-pointer appearance-none pr-6 transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 ${
         value ? STATUS_CLASS[value] : ""
       }`}
       style={{
