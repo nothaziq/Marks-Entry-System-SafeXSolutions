@@ -1,28 +1,42 @@
-@import url("https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap");
 @import "tailwindcss";
 
 :root {
-  --ink: #1b2430;
-  --ink-soft: #4b5563;
-  --paper: #f7f7f4;
-  --paper-raised: #ffffff;
-  --line: #dfded8;
-  --primary: #2a5c4b;
-  --primary-dark: #1e4438;
-  --primary-tint: #e7f0ec;
+  /* Surfaces */
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --border-soft: #eef0f2;
 
-  --present: #2f7d4f;
-  --present-tint: #e6f3ea;
-  --absent: #b4453a;
-  --absent-tint: #fbe9e7;
-  --late: #b8842c;
-  --late-tint: #fbf1de;
-  --leave: #4a5fa0;
-  --leave-tint: #e9ecf6;
+  /* Text */
+  --ink: #101828;
+  --ink-soft: #667085;
+  --ink-faint: #98a2b3;
 
-  --font-display: "Zilla Slab", ui-serif, Georgia, serif;
+  /* Brand / primary action */
+  --primary: #0f172a;
+  --primary-hover: #1e293b;
+  --accent: #4f46e5;
+  --accent-tint: #eef2ff;
+
+  /* Status */
+  --present: #16a34a;
+  --present-tint: #ecfdf3;
+  --present-border: #bbf0cf;
+  --absent: #e11d48;
+  --absent-tint: #fef2f3;
+  --absent-border: #fecdd6;
+  --late: #d97706;
+  --late-tint: #fffaeb;
+  --late-border: #fde3a7;
+  --leave: #7c3aed;
+  --leave-tint: #f6f3ff;
+  --leave-border: #e0d4fc;
+
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
 }
 
 * {
@@ -37,58 +51,66 @@ body,
 
 body {
   margin: 0;
-  background: var(--paper);
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  font-feature-settings: "tnum" 1, "cv11" 1;
 }
 
 h1,
 h2,
 h3 {
-  font-family: var(--font-display);
   color: var(--ink);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
+  font-weight: 800;
 }
 
 .font-mono-tab {
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Signature element: rubber-stamp status badges */
-.stamp {
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.875rem;
+  box-shadow: var(--shadow-card);
+}
+
+/* Status pill — used for the status <select> and any read-only badges */
+.status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 0.28rem 0.6rem;
-  border-radius: 3px;
-  border: 1.5px solid currentColor;
-  transform: rotate(-1deg);
-  white-space: nowrap;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-soft);
 }
 
-.stamp-present {
+.status-present {
   color: var(--present);
   background: var(--present-tint);
+  border-color: var(--present-border);
 }
-.stamp-absent {
+.status-absent {
   color: var(--absent);
   background: var(--absent-tint);
-  transform: rotate(1deg);
+  border-color: var(--absent-border);
 }
-.stamp-late {
+.status-late {
   color: var(--late);
   background: var(--late-tint);
+  border-color: var(--late-border);
 }
-.stamp-leave {
+.status-leave {
   color: var(--leave);
   background: var(--leave-tint);
-  transform: rotate(1deg);
+  border-color: var(--leave-border);
 }
 
 /* focus visibility */
@@ -96,8 +118,20 @@ a:focus-visible,
 button:focus-visible,
 select:focus-visible,
 input:focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ink-faint);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {

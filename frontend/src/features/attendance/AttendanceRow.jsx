@@ -1,45 +1,33 @@
 import StatusSelect from "../../components/StatusSelect";
-import StatusStamp from "../../components/StatusStamp";
 
-export default function AttendanceRow({ row, onChange, mode }) {
+export default function AttendanceRow({ index, row, onChange }) {
   const isDirty = row.status !== row.savedStatus || row.remarks !== row.savedRemarks;
 
   return (
     <div
-      className="grid grid-cols-[auto_1fr] items-start gap-3 border-b border-[var(--line)] py-3
-                 sm:grid-cols-[3rem_1fr_9rem_1fr] sm:items-center sm:gap-4"
+      className="grid grid-cols-[2rem_5rem_1fr] items-center gap-3 border-b border-[var(--border-soft)] px-5 py-3.5 last:border-b-0 hover:bg-[var(--bg)]/60 sm:grid-cols-[2rem_6rem_1fr_9rem_1fr]"
     >
-      <span className="font-mono-tab text-xs text-[var(--ink-soft)]">{row.rollNumber}</span>
+      <span className="text-sm text-[var(--ink-faint)]">{index}</span>
+      <span className="font-mono-tab text-sm text-[var(--ink-soft)]">{row.rollNumber}</span>
 
       <div className="min-w-0">
-        <p className="truncate font-medium text-[var(--ink)]">{row.fullName}</p>
-        {mode === "saved" && (
-          <div className="mt-1 sm:hidden">
-            <StatusStamp status={row.savedStatus} />
-          </div>
-        )}
+        <p className="truncate text-sm font-medium text-[var(--ink)]">
+          {row.fullName}
+          {isDirty && <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-[var(--late)]" title="Unsaved change" />}
+        </p>
       </div>
 
-      <StatusSelect
-        label={`Status for ${row.fullName}`}
-        value={row.status}
-        onChange={(status) => onChange({ ...row, status })}
-      />
+      <div className="col-span-2 grid grid-cols-2 gap-3 sm:col-span-1 sm:contents">
+        <StatusSelect label={`Status for ${row.fullName}`} value={row.status} onChange={(status) => onChange({ ...row, status })} />
 
-      <div className="flex items-center gap-2">
         <input
           type="text"
           value={row.remarks || ""}
           onChange={(e) => onChange({ ...row, remarks: e.target.value })}
-          placeholder="Remarks (optional)"
+          placeholder="Optional remarks"
           aria-label={`Remarks for ${row.fullName}`}
-          className="w-full rounded-md border border-[var(--line)] px-2.5 py-1.5 text-sm focus:border-[var(--primary)]"
+          className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--ink)] placeholder:text-[var(--ink-faint)] focus:border-[var(--accent)]"
         />
-        {mode === "saved" && isDirty && (
-          <span className="shrink-0 text-xs font-medium text-[var(--late)]" title="Unsaved change">
-            ●
-          </span>
-        )}
       </div>
     </div>
   );
