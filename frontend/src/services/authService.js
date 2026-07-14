@@ -10,11 +10,6 @@ export async function fetchProfile() {
   return data.data; // { id, full_name, email, is_admin, is_active, created_at }
 }
 
-export async function updateProfile({ full_name, email }) {
-  const { data } = await client.patch("/profile", { full_name, email });
-  return data.data; // updated { id, full_name, email, is_admin, is_active, created_at }
-}
-
 export async function changePassword({ current_password, new_password, confirm_password }) {
   const { data } = await client.post("/change-password", {
     current_password,

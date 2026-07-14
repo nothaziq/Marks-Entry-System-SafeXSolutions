@@ -6,7 +6,6 @@ from app.schemas.auth import (
     LoginRequest,
     TokenResponse,
     TeacherProfile,
-    UpdateProfileRequest,
     ChangePasswordRequest,
 )
 from app.schemas.common import SuccessResponse
@@ -42,12 +41,6 @@ def logout():
 @router.get("/profile", response_model=SuccessResponse[TeacherProfile])
 def profile(current_teacher: CurrentTeacher):
     return SuccessResponse(message="Profile retrieved.", data=_to_profile(current_teacher))
-
-
-@router.patch("/profile", response_model=SuccessResponse[TeacherProfile])
-def update_profile(payload: UpdateProfileRequest, current_teacher: CurrentTeacher, db: DbSession):
-    updated = AuthService(db).update_profile(current_teacher, payload)
-    return SuccessResponse(message="Profile updated successfully.", data=_to_profile(updated))
 
 
 @router.post("/change-password", response_model=SuccessResponse[None])

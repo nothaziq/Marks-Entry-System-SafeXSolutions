@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   UserCircle,
   Bell,
   SlidersHorizontal,
   CloudUpload,
+  ShieldCheck,
   Eye,
   EyeOff,
-  ShieldCheck,
   Trash2,
   AlertTriangle,
 } from "lucide-react";
@@ -40,44 +40,15 @@ function formatDate(value) {
 }
 
 const TABS = [
-  { key: "profile", label: "Profile Settings", icon: UserCircle },
+  { key: "security", label: "Security", icon: ShieldCheck },
   { key: "notifications", label: "Notifications", icon: Bell },
   { key: "preferences", label: "Preferences", icon: SlidersHorizontal },
   { key: "backup", label: "Backup & Export", icon: CloudUpload },
 ];
 
 export default function SettingsPage() {
-  const { teacher, updateProfile } = useAuth();
-  const [activeTab, setActiveTab] = useState("profile");
-
-  // --- Profile form ---
-  const [fullName, setFullName] = useState(teacher?.full_name || "");
-  const [email, setEmail] = useState(teacher?.email || "");
-  const [profileError, setProfileError] = useState(null);
-  const [profileSuccess, setProfileSuccess] = useState(null);
-  const [isSavingProfile, setIsSavingProfile] = useState(false);
-
-  useEffect(() => {
-    setFullName(teacher?.full_name || "");
-    setEmail(teacher?.email || "");
-  }, [teacher]);
-
-  const profileDirty = teacher && (fullName !== teacher.full_name || email !== teacher.email);
-
-  async function handleSaveProfile(e) {
-    e.preventDefault();
-    setProfileError(null);
-    setProfileSuccess(null);
-    setIsSavingProfile(true);
-    try {
-      await updateProfile({ full_name: fullName.trim(), email: email.trim() });
-      setProfileSuccess("Profile updated successfully.");
-    } catch (err) {
-      setProfileError(err.message || "Couldn't save your profile. Please try again.");
-    } finally {
-      setIsSavingProfile(false);
-    }
-  }
+  const { teacher } = useAuth();
+  const [activeTab, setActiveTab] = useState("security");
 
   // --- Password form ---
   const [currentPassword, setCurrentPassword] = useState("");
@@ -157,61 +128,8 @@ export default function SettingsPage() {
 
         {/* Content */}
         <div className="space-y-6">
-          {activeTab === "profile" && (
+          {activeTab === "security" && (
             <>
-              <form onSubmit={handleSaveProfile} className="card p-6">
-                <div className="mb-5 flex items-start justify-between gap-4">
-                  <div>
-                    <h2 className="text-lg font-bold text-[var(--ink)]">Profile Settings</h2>
-                    <p className="mt-0.5 text-sm text-[var(--ink-soft)]">
-                      Update your name and email address.
-                    </p>
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={!profileDirty || isSavingProfile}
-                    className="shrink-0 rounded-lg bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100"
-                  >
-                    {isSavingProfile ? "Saving…" : "Save Changes"}
-                  </button>
-                </div>
-
-                {profileError && <ErrorBanner message={profileError} />}
-                {profileSuccess && (
-                  <div className="mb-4 rounded-md border border-[var(--present-border)] bg-[var(--present-tint)] px-4 py-3 text-sm font-semibold text-[var(--present)]">
-                    {profileSuccess}
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="fullName" className="mb-1.5 block text-sm font-medium text-[var(--ink)]">
-                      Full Name
-                    </label>
-                    <input
-                      id="fullName"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      required
-                      className="w-full rounded-lg border border-[var(--border)] px-3 py-2.5 text-sm focus:border-[var(--accent)]"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-[var(--ink)]">
-                      Email Address
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="w-full rounded-lg border border-[var(--border)] px-3 py-2.5 text-sm focus:border-[var(--accent)]"
-                    />
-                  </div>
-                </div>
-              </form>
-
               <form onSubmit={handleChangePassword} className="card p-6">
                 <div className="mb-5">
                   <h2 className="text-lg font-bold text-[var(--ink)]">Change Password</h2>
@@ -449,8 +367,8 @@ function ToggleRow({ label, description, checked, onChange }) {
         }`}
       >
         <span
-          className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-            checked ? "translate-x-5" : "translate-x-0"
+          className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+            checked ? "translate-x-[22px]" : "translate-x-0.5"
           }`}
         />
       </button>

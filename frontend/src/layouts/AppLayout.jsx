@@ -6,7 +6,6 @@ import {
   History,
   BarChart3,
   Users,
-  UserCircle,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -18,7 +17,6 @@ const NAV_ITEMS = [
   { label: "Attendance History", icon: History, to: null },
   { label: "Reports", icon: BarChart3, to: "/reports" },
   { label: "Students", icon: Users, to: "/students" },
-  { label: "Profile", icon: UserCircle, to: null },
   { label: "Settings", icon: Settings, to: "/settings" },
 ];
 

@@ -24,19 +24,6 @@ class TeacherProfile(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class UpdateProfileRequest(BaseModel):
-    full_name: str
-    email: EmailStr
-
-    @field_validator("full_name")
-    @classmethod
-    def full_name_not_blank(cls, v: str) -> str:
-        v = v.strip()
-        if not v:
-            raise ValueError("Full name can't be empty.")
-        return v
-
-
 class ChangePasswordRequest(BaseModel):
     current_password: str
     new_password: str
