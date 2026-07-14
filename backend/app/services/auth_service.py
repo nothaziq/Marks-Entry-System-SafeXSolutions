@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
 
-from app.core.security import verify_password, create_access_token
+from app.core.security import verify_password, hash_password, create_access_token
+from app.models.teacher import Teacher
 from app.repositories.teacher_repository import TeacherRepository
-from app.schemas.auth import LoginRequest, TokenResponse
-from app.services.exceptions import AuthenticationError
+from app.schemas.auth import LoginRequest, TokenResponse, UpdateProfileRequest, ChangePasswordRequest
+from app.services.exceptions import AuthenticationError, ConflictError, ValidationError
 
 
 class AuthService:
@@ -22,3 +23,22 @@ class AuthService:
             extra_claims={"email": teacher.email, "is_admin": teacher.is_admin},
         )
         return TokenResponse(access_token=token)
+
+    def update_profile(self, teacher: Teacher, payload: UpdateProfileRequest) -> Teacher:
+        if payload.email.lower() != teacher.email.lower():
+            existing = self.teacher_repo.get_by_email(payload.email)
+            if existing and existing.id != teacher.id:
+                raise ConflictError("That email address is already in use.")
+            teacher.email = payload.email
+
+        teacher.full_name = payload.full_name
+        return self.teacher_repo.commit_refresh(teacher)
+
+    def change_password(self, teacher: Teacher, payload: ChangePasswordRequest) -> None:
+        if not verify_password(payload.current_password, teacher.password_hash):
+            raise AuthenticationError("Current password is incorrect.")
+        if payload.new_password != payload.confirm_password:
+            raise ValidationError("New password and confirmation don't match.")
+
+        teacher.password_hash = hash_password(payload.new_password)
+        self.teacher_repo.commit_refresh(teacher)
