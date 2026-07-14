@@ -86,9 +86,24 @@ export default function LoginPage() {
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 aria-pressed={showPassword}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-[var(--ink-faint)] hover:text-[var(--ink-soft)]"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-md text-[var(--ink-faint)] hover:text-[var(--ink-soft)]"
               >
-                {showPassword ? <EyeOff size={17} strokeWidth={2} /> : <Eye size={17} strokeWidth={2} />}
+                <span className="relative block h-[17px] w-[17px]">
+                  <Eye
+                    size={17}
+                    strokeWidth={2}
+                    className={`absolute inset-0 transition-all duration-200 ease-out ${
+                      showPassword ? "rotate-45 scale-75 opacity-0" : "rotate-0 scale-100 opacity-100"
+                    }`}
+                  />
+                  <EyeOff
+                    size={17}
+                    strokeWidth={2}
+                    className={`absolute inset-0 transition-all duration-200 ease-out ${
+                      showPassword ? "rotate-0 scale-100 opacity-100" : "-rotate-45 scale-75 opacity-0"
+                    }`}
+                  />
+                </span>
               </button>
             </div>
           </div>
