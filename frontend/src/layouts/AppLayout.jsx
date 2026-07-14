@@ -17,9 +17,9 @@ const NAV_ITEMS = [
   { label: "Classes", icon: BookOpen, to: "/classes" },
   { label: "Attendance History", icon: History, to: null },
   { label: "Reports", icon: BarChart3, to: "/reports" },
-  { label: "Students", icon: Users, to: null },
+  { label: "Students", icon: Users, to: "/students" },
   { label: "Profile", icon: UserCircle, to: null },
-  { label: "Settings", icon: Settings, to: "/settings" },
+  { label: "Settings", icon: Settings, to: null, soon: true },
 ];
 
 function initials(name) {
