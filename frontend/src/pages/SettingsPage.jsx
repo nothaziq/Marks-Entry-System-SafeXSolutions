@@ -7,10 +7,18 @@ import {
   ShieldCheck,
   Eye,
   EyeOff,
+  Calendar,
+  FileSpreadsheet,
+  FileText,
+  Upload,
+  Loader2,
 } from "lucide-react";
 import { useAuth } from "../store/AuthContext";
 import { changePassword } from "../services/authService";
+import { exportAttendanceCSV, exportAttendanceExcel } from "../features/import-export/attendanceExport";
+import ImportAttendanceModal from "../features/import-export/ImportAttendanceModal";
 import ErrorBanner from "../components/ErrorBanner";
+import { todayISO, addDaysISO, formatShortDate } from "../utils/date";
 
 const PREFS_KEY = "attendance_local_prefs";
 
@@ -92,6 +100,32 @@ export default function SettingsPage() {
     const next = { ...prefs, ...patch };
     setPrefs(next);
     localStorage.setItem(PREFS_KEY, JSON.stringify(next));
+  }
+
+  // --- Backup & Export ---
+  const [exportFrom, setExportFrom] = useState(() => addDaysISO(todayISO(), -29));
+  const [exportTo, setExportTo] = useState(() => todayISO());
+  const [exportBusy, setExportBusy] = useState(null); // "csv" | "excel" | null
+  const [exportError, setExportError] = useState(null);
+  const [exportResult, setExportResult] = useState(null);
+  const [showImportModal, setShowImportModal] = useState(false);
+
+  async function handleExport(format) {
+    setExportBusy(format);
+    setExportError(null);
+    setExportResult(null);
+    try {
+      const { count } = format === "csv" ? await exportAttendanceCSV(exportFrom, exportTo) : await exportAttendanceExcel(exportFrom, exportTo);
+      if (count === 0) {
+        setExportError("No attendance records were found in that date range.");
+      } else {
+        setExportResult({ count, format });
+      }
+    } catch (err) {
+      setExportError(err.message || "Couldn't export attendance.");
+    } finally {
+      setExportBusy(null);
+    }
   }
 
   return (
@@ -273,14 +307,99 @@ export default function SettingsPage() {
           )}
 
           {activeTab === "backup" && (
-            <div className="card flex flex-col items-center gap-2 px-6 py-14 text-center">
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--accent-tint)] text-[var(--accent)]">
-                <CloudUpload size={20} strokeWidth={2} />
-              </span>
-              <h2 className="text-base font-bold text-[var(--ink)]">Backup & Export</h2>
-              <p className="max-w-sm text-sm text-[var(--ink-soft)]">
-                Exporting attendance records isn't built yet. It'll live here once the backend supports it.
-              </p>
+            <div className="space-y-6">
+              <div className="card p-6">
+                <div className="mb-1 flex items-center gap-2">
+                  <FileSpreadsheet size={18} strokeWidth={2} className="text-[var(--accent)]" />
+                  <h2 className="text-lg font-bold text-[var(--ink)]">Export Attendance</h2>
+                </div>
+                <p className="mb-5 text-sm text-[var(--ink-soft)]">
+                  Downloads every saved attendance record across all your classes in the date range below, pulled live from the
+                  API — not a cached summary.
+                </p>
+
+                {exportError && (
+                  <div className="mb-4">
+                    <ErrorBanner message={exportError} />
+                  </div>
+                )}
+                {exportResult && (
+                  <div className="mb-4 rounded-md border border-[var(--present-border)] bg-[var(--present-tint)] px-4 py-3 text-sm font-semibold text-[var(--present)]">
+                    Exported {exportResult.count} record{exportResult.count === 1 ? "" : "s"} as{" "}
+                    {exportResult.format === "csv" ? "CSV" : "Excel"}.
+                  </div>
+                )}
+
+                <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-[var(--ink-soft)]">
+                      <Calendar size={13} strokeWidth={2} /> From
+                    </label>
+                    <input
+                      type="date"
+                      value={exportFrom}
+                      max={exportTo}
+                      onChange={(e) => setExportFrom(e.target.value)}
+                      className="w-full rounded-lg border border-[var(--border)] px-3 py-2.5 text-sm focus:border-[var(--accent)]"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-[var(--ink-soft)]">
+                      <Calendar size={13} strokeWidth={2} /> To
+                    </label>
+                    <input
+                      type="date"
+                      value={exportTo}
+                      min={exportFrom}
+                      max={todayISO()}
+                      onChange={(e) => setExportTo(e.target.value)}
+                      className="w-full rounded-lg border border-[var(--border)] px-3 py-2.5 text-sm focus:border-[var(--accent)]"
+                    />
+                  </div>
+                </div>
+
+                <p className="mb-4 text-xs text-[var(--ink-faint)]">
+                  {formatShortDate(exportFrom)} – {formatShortDate(exportTo)} · fetches one request per class per day, so wider
+                  ranges take a little longer.
+                </p>
+
+                <div className="flex flex-wrap gap-2.5">
+                  <button
+                    onClick={() => handleExport("csv")}
+                    disabled={exportBusy !== null}
+                    className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-4 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:bg-[var(--bg)] disabled:opacity-50"
+                  >
+                    {exportBusy === "csv" ? <Loader2 size={16} strokeWidth={2} className="animate-spin" /> : <FileText size={16} strokeWidth={2} />}
+                    Export CSV
+                  </button>
+                  <button
+                    onClick={() => handleExport("excel")}
+                    disabled={exportBusy !== null}
+                    className="flex items-center gap-2 rounded-lg bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--primary-hover)] disabled:opacity-50"
+                  >
+                    {exportBusy === "excel" ? <Loader2 size={16} strokeWidth={2} className="animate-spin" /> : <FileSpreadsheet size={16} strokeWidth={2} />}
+                    Export Excel
+                  </button>
+                </div>
+              </div>
+
+              <div className="card p-6">
+                <div className="mb-1 flex items-center gap-2">
+                  <Upload size={18} strokeWidth={2} className="text-[var(--accent)]" />
+                  <h2 className="text-lg font-bold text-[var(--ink)]">Import Attendance</h2>
+                </div>
+                <p className="mb-5 text-sm text-[var(--ink-soft)]">
+                  Bulk-mark or update attendance for one class and date from an Excel or CSV file — matched to your roster by
+                  roll number.
+                </p>
+                <button
+                  onClick={() => setShowImportModal(true)}
+                  className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-4 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:bg-[var(--bg)]"
+                >
+                  <Upload size={16} strokeWidth={2} />
+                  Import from Excel
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -316,6 +435,8 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      {showImportModal && <ImportAttendanceModal onClose={() => setShowImportModal(false)} />}
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Calendar,
@@ -20,6 +21,7 @@ import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
 import AttendanceDonut from "../features/dashboard/AttendanceDonut";
 import AttendanceTrend from "../features/attendance/AttendanceTrend";
+import ImportAttendanceModal from "../features/import-export/ImportAttendanceModal";
 import { todayISO, formatDisplayDate } from "../utils/date";
 
 function firstName(fullName) {
@@ -28,15 +30,16 @@ function firstName(fullName) {
 }
 
 const QUICK_ACTIONS = [
-  { label: "View All Classes", sublabel: "Manage your classes", icon: Users, to: "/classes" },
-  { label: "Upload from Excel", sublabel: "Bulk attendance", icon: Upload, soon: true },
-  { label: "Generate Report", sublabel: "Attendance reports & history", icon: FileText, to: "/reports" },
+  { key: "classes", label: "View All Classes", sublabel: "Manage your classes", icon: Users, to: "/classes" },
+  { key: "import", label: "Upload from Excel", sublabel: "Bulk attendance", icon: Upload },
+  { key: "reports", label: "Generate Report", sublabel: "Attendance reports & history", icon: FileText, to: "/reports" },
 ];
 
 export default function DashboardPage() {
   const { teacher } = useAuth();
   const { classes, isLoading, isError, error, totalClasses, totalStudents, completedToday, pendingToday, overview, trend, trendLoading } =
     useDashboard();
+  const [showImportModal, setShowImportModal] = useState(false);
 
   return (
     <div>
@@ -138,23 +141,20 @@ export default function DashboardPage() {
                         </span>
                       </>
                     );
-                    if (action.soon) {
+                    if (action.key === "import") {
                       return (
-                        <div
-                          key={action.label}
-                          className="relative flex cursor-default flex-col items-start gap-2.5 rounded-lg border border-[var(--border)] p-3 opacity-60"
-                          aria-disabled="true"
+                        <button
+                          key={action.key}
+                          onClick={() => setShowImportModal(true)}
+                          className="flex flex-col items-start gap-2.5 rounded-lg border border-[var(--border)] p-3 text-left transition-colors hover:border-[var(--accent)] hover:bg-[var(--accent-tint)]"
                         >
-                          <span className="absolute right-2 top-2 rounded-full bg-[var(--bg)] px-2 py-0.5 text-[10px] font-semibold tracking-wide text-[var(--ink-faint)]">
-                            SOON
-                          </span>
                           {content}
-                        </div>
+                        </button>
                       );
                     }
                     return (
                       <Link
-                        key={action.label}
+                        key={action.key}
                         to={action.to}
                         className="flex flex-col items-start gap-2.5 rounded-lg border border-[var(--border)] p-3 transition-colors hover:border-[var(--accent)] hover:bg-[var(--accent-tint)]"
                       >
@@ -220,6 +220,8 @@ export default function DashboardPage() {
           </div>
         </>
       )}
+
+      {showImportModal && <ImportAttendanceModal onClose={() => setShowImportModal(false)} />}
     </div>
   );
 }
