@@ -19,7 +19,7 @@ const NAV_ITEMS = [
   { label: "Reports", icon: BarChart3, to: "/reports" },
   { label: "Students", icon: Users, to: "/students" },
   { label: "Profile", icon: UserCircle, to: null },
-  { label: "Settings", icon: Settings, to: null, soon: true },
+  { label: "Settings", icon: Settings, to: "/settings" },
 ];
 
 function initials(name) {
