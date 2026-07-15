@@ -16,7 +16,7 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (isAuthenticated) {
-    return <Navigate to={location.state?.from?.pathname || "/classes"} replace />;
+    return <Navigate to={location.state?.from?.pathname || "/dashboard"} replace />;
   }
 
   async function handleSubmit(e) {
@@ -25,7 +25,7 @@ export default function LoginPage() {
     setIsSubmitting(true);
     try {
       await login(email, password);
-      navigate(location.state?.from?.pathname || "/classes", { replace: true });
+      navigate(location.state?.from?.pathname || "/dashboard", { replace: true });
     } catch (err) {
       setError(err.message || "Couldn't log you in. Check your email and password.");
     } finally {
