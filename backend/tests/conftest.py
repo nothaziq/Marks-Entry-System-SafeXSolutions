@@ -72,6 +72,20 @@ def seeded_class(db_session):
     }
 
 
+@pytest.fixture
+def admin_teacher(db_session):
+    """A second teacher, with is_admin=True, for testing admin-gated endpoints."""
+    teacher = Teacher(
+        full_name="Admin Teacher",
+        email="admin@test.com",
+        password_hash=hash_password("adminsecret123"),
+        is_admin=True,
+    )
+    db_session.add(teacher)
+    db_session.commit()
+    return {"email": "admin@test.com", "password": "adminsecret123"}
+
+
 def auth_headers(client: "TestClient", email: str, password: str) -> dict:
     resp = client.post("/v1/login", json={"email": email, "password": password})
     token = resp.json()["data"]["access_token"]

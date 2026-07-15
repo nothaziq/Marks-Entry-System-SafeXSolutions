@@ -18,7 +18,7 @@ try:
             full_name="Muhammad Haziq",
             email="haziq@example.com",
             password_hash=hash_password("Password123!"),
-            is_admin=False,
+            is_admin=True,  # so this demo account can call admin-only endpoints, e.g. /admin/trigger-reminders
         )
         course = Course(name="Software Design and Architecture", code="SE-301")
         db.add_all([teacher, course])

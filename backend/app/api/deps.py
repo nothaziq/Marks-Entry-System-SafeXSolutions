@@ -11,7 +11,7 @@ from app.core.security import decode_access_token
 from app.database.session import get_db
 from app.models.teacher import Teacher
 from app.repositories.teacher_repository import TeacherRepository
-from app.services.exceptions import AuthenticationError
+from app.services.exceptions import AuthenticationError, ForbiddenError
 
 DbSession = Annotated[Session, Depends(get_db)]
 
@@ -39,3 +39,18 @@ def get_current_teacher(
 
 
 CurrentTeacher = Annotated[Teacher, Depends(get_current_teacher)]
+
+
+def require_admin(current_teacher: CurrentTeacher) -> Teacher:
+    """
+    Same as CurrentTeacher, but additionally requires is_admin. Use for
+    routes that affect data beyond the requesting teacher's own classes
+    (e.g. triggering a job that emails every teacher in the system).
+    Raises ForbiddenError (mapped to 403) if the teacher isn't an admin.
+    """
+    if not current_teacher.is_admin:
+        raise ForbiddenError("This action requires an administrator account.")
+    return current_teacher
+
+
+CurrentAdmin = Annotated[Teacher, Depends(require_admin)]
