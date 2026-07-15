@@ -73,6 +73,6 @@ def seeded_class(db_session):
 
 
 def auth_headers(client: "TestClient", email: str, password: str) -> dict:
-    resp = client.post("/login", json={"email": email, "password": password})
+    resp = client.post("/v1/login", json={"email": email, "password": password})
     token = resp.json()["data"]["access_token"]
     return {"Authorization": f"Bearer {token}"}
