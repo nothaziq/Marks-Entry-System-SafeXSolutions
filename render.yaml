@@ -1,0 +1,61 @@
+# Render Blueprint - deploys the backend as a Docker web service.
+#
+# Usage:
+#   1. Push this file to your repo (already done if you're reading it here).
+#   2. In the Render dashboard: New -> Blueprint -> select this repo.
+#   3. Render finds this file automatically and proposes the service below.
+#   4. It'll prompt you for the "sync: false" values (DATABASE_URL etc.) -
+#      that's intentional, so secrets never live in this file or in git.
+#
+# This deploys ONLY the backend. The frontend goes to Vercel separately -
+# see frontend/vercel.json and DEPLOYMENT.md.
+
+services:
+  - type: web
+    name: marks-entry-attendance-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      # Paste your Neon connection string here (use the DIRECT, non-pooled
+      # one - see DEPLOYMENT.md for why). Must include ?sslmode=require.
+      - key: DATABASE_URL
+        sync: false
+
+      # Generate with: python -c "import secrets; print(secrets.token_hex(32))"
+      - key: SECRET_KEY
+        sync: false
+
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+
+      # Your Vercel frontend URL, e.g. https://marks-entry.vercel.app
+      # No trailing slash. Update this after your Vercel deploy is live.
+      - key: CORS_ORIGINS
+        sync: false
+
+      # Optional - leave both blank to disable reminder emails entirely.
+      # See DEPLOYMENT.md for how to generate a Gmail App Password.
+      - key: GMAIL_ADDRESS
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: GMAIL_SENDER_NAME
+        value: Marks Entry System
+
+      # 24-hour, and IMPORTANT: this is server-local time, and Render's
+      # containers run in UTC - not your local timezone. See DEPLOYMENT.md
+      # for converting your desired local time to UTC before setting this.
+      - key: REMINDER_HOUR
+        value: "17"
+      - key: REMINDER_MINUTE
+        value: "0"
+
+      # Render injects PORT automatically - no need to set it. Listed here
+      # only so it's visible in the dashboard; Render's own value wins.
+      - key: PORT
+        value: "10000"
